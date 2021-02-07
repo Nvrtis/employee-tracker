@@ -10,6 +10,7 @@ var connection = mysql.createConnection({
     database: 'employee_tracker'
 });
 
+// Main questions for user
 const question = [
   {
       name: "employeeTracker",
@@ -19,11 +20,14 @@ const question = [
   }
 ]
 
+// function for asking users
 const runSearch = () => {
   inquirer
       .prompt(question)
       .then((resp) => {
+        // switch statment 
           switch (resp.employeeTracker) {
+            // view all employees and all data
               case "View All Employees":
                   connection.query("SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, employee.manager_id, role.salary, role.department_id, department.name FROM employee LEFT JOIN role ON role.id=employee.role_id LEFT Join department ON department.id=role.department_id;", (err, result) => {
                       if (err) throw err
@@ -31,7 +35,7 @@ const runSearch = () => {
                       runSearch()
                   })
                   break;
-
+// View employees by department and shows relevent data
               case "View All Employees By Department":
                   connection.query('SELECT department.name AS department, role.department_id, employee.first_name, employee.last_name, role.title FROM role  LEFT JOIN employee on employee.role_id = role.id  LEFT OUTER JOIN department on department.id=role.department_id ORDER BY department.name', (err, result) => {
                       if (err) throw err
@@ -40,7 +44,7 @@ const runSearch = () => {
                   })
 
                   break;
-
+// View employees by managers and shows relevent data
               case "View All Employees By Manager":
                   connection.query(`SELECT e.*, CONCAT (m.first_name, ' ', m.last_name) AS manager FROM employee AS e LEFT JOIN employee AS m ON e.manager_id = m.id ORDER BY e.manager_id;`, (err, result) => {
                       if (err) throw err
@@ -48,7 +52,7 @@ const runSearch = () => {
                       runSearch()
                   })
                   break;
-
+// adds employee by series of inquierer questions
               case "Add Employee":
                   connection.query(`SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, employee.manager_id, role.salary, role.department_id, department.name FROM employee LEFT JOIN role ON role.id=employee.role_id LEFT Join department ON department.id=role.department_id;`, (err, result) => {
                       if (err) throw err
@@ -78,7 +82,7 @@ const runSearch = () => {
                   })
               })
                   break;
-
+// remove employee by id
               case "Remove Employee":
                   connection.query(`SELECT * FROM employee `, (err, result) => {
                       if (err) throw err
@@ -104,7 +108,7 @@ const runSearch = () => {
                       })
                   })
                   break;
-
+// update employees role by id
               case "Update Employee Role":
                   connection.query(`SELECT * FROM employee `, (err, result) => {
                       if (err) throw err
@@ -134,7 +138,7 @@ const runSearch = () => {
                       })
                   })
                   break;
-
+// update employees manager by manager id
               case "Update Employee Manager":
                   connection.query(`SELECT * FROM employee `, (err, result) => {
                       if (err) throw err
@@ -164,7 +168,7 @@ const runSearch = () => {
                       })
                   })
                   break;
-
+// adds role by series of inquierer questions
               case "Add Role":
                   connection.query(`SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, employee.manager_id, role.salary, role.department_id, department.name FROM employee LEFT JOIN role ON role.id=employee.role_id LEFT Join department ON department.id=role.department_id;`, (err, result) => {
                       if (err) throw err
@@ -190,7 +194,7 @@ const runSearch = () => {
                   })
               })
                   break;
-
+// remove role by id
               case "Remove Role":
                   connection.query(`SELECT * FROM role `, (err, result) => {
                       if (err) throw err
@@ -216,7 +220,7 @@ const runSearch = () => {
                       })
                   })
                   break;
-
+// shows all departments and departments ids
               case "View All Departments":
                   connection.query(`SELECT * FROM department `, (err, result) => {
                       if (err) throw err
@@ -224,7 +228,7 @@ const runSearch = () => {
                       runSearch()
                   })
                   break;
-
+// adds a new Department, needs only name for department
               case "Add Department":
                   connection.query(`SELECT * FROM department `, (err, result) => {
                       if (err) throw err
@@ -244,7 +248,7 @@ const runSearch = () => {
                       })
                   })
                   break;
-
+// removes department by id
               case "Remove Department":
                   connection.query(`SELECT * FROM department `, (err, result) => {
                       if (err) throw err
@@ -270,7 +274,7 @@ const runSearch = () => {
                       })
                   })
                   break;
-
+// exit 
               case "Quit":
                   process.exit();
                   break;
@@ -278,6 +282,7 @@ const runSearch = () => {
       })
 }
 
+// calls function
 runSearch()
 
 
