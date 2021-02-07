@@ -109,18 +109,22 @@ const runSearch = () => {
                         if (err) throw err
                         console.table(result);
                         inquirer.prompt([{
-                            name: "deleteID",
+                            name: "userID",
                             type:"input",
-                            message: "Please enter the employee id you would like to delete"
+                            message: "Please enter the employee id you would like to change"
                         },{
-                            name: "areYouSure",
+                            name: "roleID",
+                            type:"input",
+                            message: "Please enter the new role id for the employee"
+                        },{
+                            name: "areYouVerySure",
                             type:"confirm",
-                            message: "Are you sure that you would like to delete this user?"
+                            message: "Are you sure that you would like to change this user?"
                         }]).then(answer => {
-                            if(answer.areYouSure) {
-                            connection.query(`DELETE FROM employee WHERE id=?`,[answer.deleteID], (err, result) => {
+                            if(answer.areYouVerySure) {
+                            connection.query(`UPDATE employee SET role_id = ? WHERE id = ?;`,[[answer.roleID],[answer.userID]], (err, result) => {
                                 if (err) throw err
-                                console.log(`User with employee id:${answer.deleteID} has been deleted`);
+                                console.log(`User with employee id:${answer.userID} has been reassigned a new role`);
                                 runSearch()
                             })}
                             else {
@@ -129,10 +133,35 @@ const runSearch = () => {
                         })
                     })
                     break;
-                    
+
                 case "Update Employee Manager":
-                    connection.query()
-                    runSearch()
+                    connection.query(`SELECT * FROM employee `, (err, result) => {
+                        if (err) throw err
+                        console.table(result);
+                        inquirer.prompt([{
+                            name: "userID",
+                            type:"input",
+                            message: "Please enter the employee id you would like to change the manager for"
+                        },{
+                            name: "managerID",
+                            type:"input",
+                            message: "Please enter the new manager id"
+                        },{
+                            name: "areYouVerySure",
+                            type:"confirm",
+                            message: "Are you sure that you would like to change this user?"
+                        }]).then(answer => {
+                            if(answer.areYouVerySure) {
+                            connection.query(`UPDATE employee SET manager_id = ? WHERE id = ?;`,[[answer.managerID],[answer.userID]], (err, result) => {
+                                if (err) throw err
+                                console.log(`User with employee id:${answer.userID} has been reassigned a new manager`);
+                                runSearch()
+                            })}
+                            else {
+                                runSearch()
+                            }
+                        })
+                    })
                     break;
 
                 case "Add Role":
