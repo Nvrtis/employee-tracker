@@ -21,7 +21,6 @@ const runSearch = () => {
     inquirer
         .prompt(question)
         .then((resp) => {
-
             switch (resp.employeeTracker) {
                 case "View All Employees":
                     connection.query("SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, employee.manager_id, role.salary, role.department_id, department.name FROM employee LEFT JOIN role ON role.id=employee.role_id LEFT Join department ON department.id=role.department_id;", (err, result) => {
@@ -41,7 +40,7 @@ const runSearch = () => {
                     break;
 
                 case "View All Employees By Manager":
-                    connection.query(`SELECT e.*, CONCAT (m.first_name, ' ', m.last_name) AS manager FROM employee AS e LEFT JOIN employee AS m ON e.manager_id = m.id;`, (err, result) => {
+                    connection.query(`SELECT e.*, CONCAT (m.first_name, ' ', m.last_name) AS manager FROM employee AS e LEFT JOIN employee AS m ON e.manager_id = m.id ORDER BY e.manager_id;`, (err, result) => {
                         if (err) throw err
                         console.table(result);
                         runSearch()
@@ -165,28 +164,109 @@ const runSearch = () => {
                     break;
 
                 case "Add Role":
-                    connection.query()
-                    runSearch()
+                    connection.query(`SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, employee.manager_id, role.salary, role.department_id, department.name FROM employee LEFT JOIN role ON role.id=employee.role_id LEFT Join department ON department.id=role.department_id;`, (err, result) => {
+                        if (err) throw err
+                        console.table(result);
+                        inquirer.prompt([{
+                            name: "title",
+                            type: "input",
+                            message: "Please enter role title"
+                        }, {
+                            name: "salary",
+                            type: "input",
+                            message: "Please employees salary (in thousands)"
+                        }, {
+                            name: "department",
+                            type: "input",
+                            message: "Please department ID",
+                        }]).then(answer => {
+                            connection.query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?);`,[[answer.title],[answer.salary],[answer.department]], (err, result2) => {
+                                if (err) throw err
+                                console.log(`${answer.title} has been added in Department id: ${answer.department} with a salary of ${answer.salary}.000`)
+                            runSearch()
+                        })
+                    })
+                })
                     break;
 
                 case "Remove Role":
-                    connection.query()
-                    runSearch()
+                    connection.query(`SELECT * FROM role `, (err, result) => {
+                        if (err) throw err
+                        console.table(result);
+                        inquirer.prompt([{
+                            name: "deleteRoleID",
+                            type:"input",
+                            message: "Please enter the role id you would like to delete"
+                        },{
+                            name: "areYouSure",
+                            type:"confirm",
+                            message: "Are you sure that you would like to delete this role?"
+                        }]).then(answer => {
+                            if(answer.areYouSure) {
+                            connection.query(`DELETE FROM role WHERE id=?`,[answer.deleteRoleID], (err, result) => {
+                                if (err) throw err
+                                console.log(`role id:${answer.deleteID} has been deleted`);
+                                runSearch()
+                            })}
+                            else {
+                                runSearch()
+                            }
+                        })
+                    })
                     break;
 
                 case "View All Departments":
-                    connection.query()
-                    runSearch()
+                    connection.query(`SELECT * FROM department `, (err, result) => {
+                        if (err) throw err
+                        console.table(result)
+                        runSearch()
+                    })
                     break;
 
                 case "Add Department":
-                    connection.query()
-                    runSearch()
+                    connection.query(`SELECT * FROM department `, (err, result) => {
+                        if (err) throw err
+                        console.table(result)
+                        inquirer.prompt({
+                            name: "departmentName",
+                            type: "input",
+                            message: "Please enter the department name (please enter with all caps)",
+                        }).then(answer => {
+                            connection.query(`INSERT INTO department (name) VALUES (?) `,[answer.departmentName], (err, result) => {
+                                if (err) throw err
+                                console.log(`Department ${answer.departmentName} has been added`);
+    
+                                runSearch()
+
+                        })
+                        })
+                    })
                     break;
 
                 case "Remove Department":
-                    connection.query()
-                    runSearch()
+                    connection.query(`SELECT * FROM department `, (err, result) => {
+                        if (err) throw err
+                        console.table(result);
+                        inquirer.prompt([{
+                            name: "deleteDepartmentID",
+                            type:"input",
+                            message: "Please enter the department id you would like to delete"
+                        },{
+                            name: "areYouSure",
+                            type:"confirm",
+                            message: "Are you sure that you would like to delete this department?"
+                        }]).then(answer => {
+                            if(answer.areYouSure) {
+                            connection.query(`DELETE FROM department WHERE id=?`,[answer.deleteDepartmentID], (err, result) => {
+                                if (err) throw err
+                                console.log(`Department id:${answer.deleteDepartmentID} has been deleted`);
+                                runSearch()
+                            })}
+                            else {
+                                runSearch()
+                            }
+                        })
+                    })
                     break;
 
                 case "Quit":
@@ -197,20 +277,3 @@ const runSearch = () => {
 }
 
 module.exports = runSearch()
-
-
-
-// const departments = []
-// for (var i = 0; i < result.length; i++) {
-//     departments.push(result[i].name)
-// }
-// // console.log(departments);
-// inquirer.prompt({
-//     name: "whichDepartment",
-//     type: "list",
-//     message: "Which Department would you like to search for?",
-//     choices: departments
-// }
-// ).then((resp) => {
-//     connection.query('SELECT * FROM department;',(err, result)=> {
-//         if(err) throw err
