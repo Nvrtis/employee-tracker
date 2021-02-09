@@ -170,7 +170,7 @@ const runSearch = () => {
                   break;
 // adds role by series of inquierer questions
               case "Add Role":
-                  connection.query(`SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, employee.manager_id, role.salary, role.department_id, department.name FROM employee LEFT JOIN role ON role.id=employee.role_id LEFT Join department ON department.id=role.department_id;`, (err, result) => {
+                  connection.query(`SELECT * FROM role;`, (err, result) => {
                       if (err) throw err
                       console.table(result);
                       inquirer.prompt([{
