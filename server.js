@@ -16,7 +16,7 @@ const question = [
       name: "employeeTracker",
       type: "list",
       message: "What would you like to do",
-      choices: ["View All Employees", "View All Employees By Department", "View All Employees By Manager", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "Add Role", "Remove Role", "View All Departments", "Add Department", "Remove Department", "Quit"]
+      choices: ["View All Employees", "View All Employees By Department", "View All Employees By Manager", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager","View All Roles", "Add Role", "Remove Role", "View All Departments", "Add Department", "Remove Department", "Quit"]
   }
 ]
 
@@ -140,6 +140,7 @@ const runSearch = () => {
                   break;
 // update employees manager by manager id
               case "Update Employee Manager":
+                
                   connection.query(`SELECT * FROM employee `, (err, result) => {
                       if (err) throw err
                       console.table(result);
@@ -168,6 +169,15 @@ const runSearch = () => {
                       })
                   })
                   break;
+// view all roles
+                  case "View All Roles":
+                  connection.query("SELECT * FROM role", (err, result) => {
+                      if (err) throw err
+                      console.table(result)
+                      runSearch()
+                  })
+                  break;
+
 // adds role by series of inquierer questions
               case "Add Role":
                   connection.query(`SELECT * FROM role;`, (err, result) => {
