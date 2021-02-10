@@ -20,6 +20,10 @@
   ## Description  
   The employee tacker is a Contenct management system that makes the users be able to quickly add, remove employees, roles and department. Also able to update employees and roles. 
 
+  All the questions with switch statments are in the public/assests/index.js file.
+
+  In future update i will be building a html page to show all the data.
+
   ## Usage  
   Can be used by everyone that needs to be able to add, delete edit or just show information about employees, roles and departments.
   
