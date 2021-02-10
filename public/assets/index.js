@@ -41,8 +41,6 @@ const runSearch = () => {
                         if (err) throw err
                         console.table(result)
                         runSearch()
-                    }).catch(err => {
-                        console.error(err)
                     })
                     break;
                 // View employees by department and shows relevent data
@@ -51,8 +49,6 @@ const runSearch = () => {
                         if (err) throw err
                         console.table(result);
                         runSearch()
-                    }).catch(err => {
-                        console.error(err)
                     })
 
                     break;
@@ -62,8 +58,6 @@ const runSearch = () => {
                         if (err) throw err
                         console.table(result);
                         runSearch()
-                    }).catch(err => {
-                        console.error(err)
                     })
                     break;
                 // adds employee by series of inquierer questions
@@ -94,8 +88,6 @@ const runSearch = () => {
                                 runSearch()
                             })
                         })
-                    }).catch(err => {
-                        console.error(err)
                     })
                     break;
                 // remove employee by id
@@ -123,8 +115,6 @@ const runSearch = () => {
                                 runSearch()
                             }
                         })
-                    }).catch(err => {
-                        console.error(err)
                     })
                     break;
                 // update employees role by id
@@ -156,8 +146,6 @@ const runSearch = () => {
                                 runSearch()
                             }
                         })
-                    }).catch(err => {
-                        console.error(err)
                     })
                     break;
                 // update employees manager by manager id
@@ -190,8 +178,6 @@ const runSearch = () => {
                                 runSearch()
                             }
                         })
-                    }).catch(err => {
-                        console.error(err)
                     })
                     break;
                 // view all roles
@@ -200,8 +186,6 @@ const runSearch = () => {
                         if (err) throw err
                         console.table(result)
                         runSearch()
-                    }).catch(err => {
-                        console.error(err)
                     })
                     break;
                 // adds role by series of inquierer questions
@@ -228,8 +212,6 @@ const runSearch = () => {
                                 runSearch()
                             })
                         })
-                    }).catch(err => {
-                        console.error(err)
                     })
                     break;
                 // remove role by id
@@ -257,8 +239,6 @@ const runSearch = () => {
                                 runSearch()
                             }
                         })
-                    }).catch(err => {
-                        console.error(err)
                     })
                     break;
                 // shows all departments and departments ids
@@ -267,8 +247,6 @@ const runSearch = () => {
                         if (err) throw err
                         console.table(result)
                         runSearch()
-                    }).catch(err => {
-                        console.error(err)
                     })
                     break;
                 // adds a new Department, needs only name for department
@@ -280,6 +258,7 @@ const runSearch = () => {
                             name: "departmentName",
                             type: "input",
                             message: "Please enter the department name (please enter with all caps)",
+
                         }).then(answer => {
                             connection.query(`INSERT INTO department (name) VALUES (?) `, [answer.departmentName], (err, result) => {
                                 if (err) throw err
@@ -288,8 +267,6 @@ const runSearch = () => {
                                 runSearch()
 
                             })
-                        }).catch(err => {
-                            console.error(err)
                         })
                     })
                     break;
@@ -317,9 +294,9 @@ const runSearch = () => {
                             else {
                                 runSearch()
                             }
-                        }).catch(err => {
-                            console.error(err)
                         })
+                    }).catch(err => {
+                        console.error(err)
                     })
                     break;
                 // exit 
